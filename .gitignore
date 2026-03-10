@@ -1,0 +1,18 @@
+# Outputs
+outputs/
+
+# R
+.Rproj.user
+.Rhistory
+.Rdata
+.Ruserdata
+*.Rproj
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo

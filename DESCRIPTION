@@ -1,0 +1,8 @@
+Title: CourtSightR
+Description: A lightweight terminal-run NBA analytics tool that loads local CSV game data,
+    cleans it, computes performance splits, and exports summaries and plots for
+    exploratory sports analysis.
+Version: 0.1.0
+Author: CourtSightR
+Depends: R (>= 4.0.0)
+Suggests: readr, dplyr, tidyr, ggplot2, optparse
