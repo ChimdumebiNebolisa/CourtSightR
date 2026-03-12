@@ -1,6 +1,6 @@
 # CourtSightR
 
-A lightweight **terminal-run NBA analytics tool** built in R. CourtSightR loads a local CSV of NBA game data, cleans it, computes performance splits, prints readable summaries in the terminal, and saves CSV summaries and plots to an `outputs/` folder. It is designed for quick exploratory analysis by a student or analyst working with game-level data on their machine.
+A lightweight **terminal-run NBA analytics tool** built in R. CourtSightR loads a local CSV of NBA game data, cleans it, computes performance splits, prints readable summaries in the terminal, and saves CSV summaries and plots to an `outputs/` folder. 
 
 ## Why it exists
 
