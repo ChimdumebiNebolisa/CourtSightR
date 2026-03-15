@@ -52,6 +52,10 @@
 | turnovers          | TOV         | Direct. |
 | plus_minus         | PLUS_MINUS  | Direct. |
 
+## Split-usefulness evaluation
+
+- An **exploratory** evaluation of split usefulness (win_loss, home_away, opponent) on the 2018-19 clean file is in **reports/split_usefulness_2018_19.Rmd**, with results in **reports/tables/split_usefulness_summary.csv**. The 2018-19 slice includes regular season and playoffs; findings describe practical split usefulness, not causation.
+
 ## Expanding to multiple seasons (optional)
 
 To build a file for **2017-18 and 2018-19** combined, edit `scripts/build_clean_games_2018_19.R`: set `SEASON_START <- as.Date("2017-10-01")`, keep `SEASON_END` as is, and set `OUT_PATH` to e.g. `data/games_2017_19_courtsightr.csv`. Then re-run the script.

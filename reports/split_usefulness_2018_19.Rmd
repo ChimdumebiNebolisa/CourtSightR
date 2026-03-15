@@ -17,39 +17,40 @@ library(knitr)
 if (basename(getwd()) == "reports") setwd("..")
 ```
 
+# Scope and framing
+
+This is an **exploratory** evaluation of which CourtSightR split types produce meaningful, stable variation for player-level analysis. It is not a causal study, a prediction project, or a formal validation of the tool.
+
+- **Data:** The 2018-19 slice includes **both regular season and playoffs** (date window only; the source has no playoff flag).
+- **Source:** Scraped (e.g. Basketball Reference–style), not official; no guarantee of completeness or accuracy.
+- **Findings:** They describe **practical split usefulness** for exploratory analysis, not causation or universal basketball truth.
+- **Opponent split:** Only a **limited subset of players** (8 of 30 in this run) met the opponent-group thresholds; opponent results should be interpreted cautiously.
+
 # Question
 
 Which split types in CourtSightR most consistently produce **meaningful, non-trivial, and reasonably stable variation** for player-level analysis after filtering out tiny or noisy groups?
 
-This is a **practical analytics question** (which splits are useful for exploratory analysis), not a claim about basketball causality or universal truth.
-
 # Dataset
 
 - **Source:** `data/games_2018_19_courtsightr.csv` (cleaned 2018-19 NBA player-game data).
-- **Scope:** The slice uses a **date window** (2018-10-01 to 2019-06-30). The source does **not** provide a playoff flag, so the slice includes **both regular season and playoffs**.
-- **Entity filter:** Top **30** players by total minutes, with **≥ 45 games** and **≥ 20 average minutes** per game. This keeps splits interpretable and avoids noise from low-usage players.
+- **Scope:** Date window 2018-10-01 to 2019-06-30. The source does **not** provide a playoff flag, so the slice includes **both regular season and playoffs**.
+- **Player pool:** Top **30** players by total minutes, with **≥ 45 games** and **≥ 20 average minutes** per game.
 
 # Methods
 
-- **Binary splits** (`win_loss`, `home_away`): For each player and metric, we require **≥ 10 games** in each of the two groups. We compute **Cohen’s d** (standardized mean difference) between groups, then take the **median of |Cohen’s d|** across qualifying players as the usefulness score. **Uncertainty:** 95% bootstrap interval for that median (1000 reps).
-- **Multi-group split** (`opponent`): For each player we require **≥ 5 games** per opponent and **≥ 4 opponent groups** and **≥ 30 total rows**. We compute **eta-squared** (variance explained by opponent) per player, then **median eta-squared** across players. **Uncertainty:** 95% bootstrap interval for that median.
-- **Metrics:** points, rebounds, assists, plus_minus, and **fg_pct** (derived as fg_made/fg_attempts per game when fg_attempts > 0).
-- **Useful:** For binary splits we interpret |Cohen’s d| as trivial (&lt; 0.20), small (0.20–0.50), moderate (0.50–0.80), or large (≥ 0.80). For opponent we use eta² cutoffs: trivial (&lt; 0.01), small (0.01–0.06), moderate (0.06–0.14), large (≥ 0.14).
+- **Binary splits** (`win_loss`, `home_away`): For each player and metric, **≥ 10 games** in each of the two groups. Use **Cohen’s d** between groups, then **median of |Cohen’s d|** across qualifying players as the usefulness score. **Uncertainty:** 95% bootstrap interval for that median (1000 reps).
+- **Multi-group split** (`opponent`): For each player, **≥ 5 games** per opponent, **≥ 4 opponent groups**, **≥ 30 total rows**. Use **eta-squared** (variance explained by opponent) per player, then **median eta-squared** across qualifying players. **Uncertainty:** 95% bootstrap interval for that median. In this run, **only 8 players** met these thresholds; opponent results are exploratory for that smaller subset.
+- **Metrics:** points, rebounds, assists, plus_minus, fg_pct (derived as fg_made/fg_attempts per game when fg_attempts > 0).
+- **Interpretation:** Binary: |Cohen’s d| trivial (&lt; 0.20), small (0.20–0.50), moderate (0.50–0.80), large (≥ 0.80). Opponent: eta² trivial (&lt; 0.01), small (0.01–0.06), moderate (0.06–0.14), large (≥ 0.14).
 
 # Results
 
-Run the evaluation script once to generate the summary table:
-
-```bash
-Rscript scripts/evaluate_split_usefulness.R
-```
-
-Then the table below is read from `reports/tables/split_usefulness_summary.csv`.
+The table below is read from `reports/tables/split_usefulness_summary.csv` (pre-computed in the repo).
 
 ```{r load-table}
 csv_path <- file.path("reports", "tables", "split_usefulness_summary.csv")
 if (!file.exists(csv_path)) {
-  stop("Run first from project root: Rscript scripts/evaluate_split_usefulness.R")
+  stop("Summary table not found. Run from project root: Rscript scripts/evaluate_split_usefulness.R")
 }
 tbl <- read_csv(csv_path, show_col_types = FALSE)
 ```
@@ -60,19 +61,26 @@ tbl <- read_csv(csv_path, show_col_types = FALSE)
 kable(tbl, digits = 4)
 ```
 
-# Failure cases / misleading split examples
+## Top-line findings (from this run)
 
-- **Binary:** Players with &lt; 10 games in either group (e.g. win vs loss) are excluded, so the score reflects only players with enough data in both groups.
-- **Opponent:** Imbalanced schedules (e.g. few games vs some teams) can inflate or deflate eta²; we mitigate by requiring at least 5 games per opponent and 4+ opponent groups.
-- Splits that show “insufficient data” or “trivial” in the table indicate that for this season and player pool, that split did not yield a stable or meaningful signal.
+- **win_loss** is the **strongest overall split** in this evaluation. Median |Cohen’s d|: **plus_minus 1.76** (large; 95% bootstrap CI 1.66–1.85), **assists 0.33** and **fg_pct 0.42** (small), **points 0.21** (small), **rebounds 0.18** (trivial). All 30 players qualified. **Note:** Large plus_minus differences under win_loss are expectedly tied to outcome (wins vs losses) and should not be treated as a surprising insight.
+- **home_away** is **weaker and usually small**. Median |Cohen’s d|: **plus_minus 0.42** (small), all other metrics trivial (points 0.15, rebounds 0.17, assists 0.13, fg_pct 0.16). All 30 players qualified.
+- **opponent** showed **moderate signal for a smaller qualifying subset only**. Only **8 players** met the opponent thresholds. Median eta²: **plus_minus 0.16** (large explained variation), **points 0.07**, **rebounds 0.10**, **assists 0.08**, **fg_pct 0.09** (moderate). These results are exploratory and should be interpreted cautiously given the small number of qualifying players and schedule/opponent imbalance.
+
+# Failure cases / caveats
+
+- **Binary:** Players with &lt; 10 games in either group are excluded.
+- **Opponent:** Imbalanced schedules can inflate or deflate eta²; only 8 of 30 players had enough opponent diversity for inclusion.
+- “Trivial” or “insufficient data” in the table means that split did not yield a stable or meaningful signal in this run.
 
 # Limitations
 
-- **2018-19 slice includes playoffs**; we do not separate regular season from playoffs.
-- **Source data** is scraped (e.g. Basketball Reference–style), not official; no guarantee of completeness or accuracy.
-- **No causal claims**; we only assess whether split types show consistent variation, not whether the split “causes” performance differences.
+- **2018-19 slice includes playoffs**; regular season is not separated.
+- **Source data** is scraped, not official.
+- **No causal claims**; we only assess whether split types show consistent variation.
 - **Single season, single player pool**; results are not a universal validation of the tool.
+- **Opponent** results are based on 8 qualifying players only.
 
 # Conclusion
 
-The comparison table summarizes which split × metric combinations produced non-trivial, stable variation in this evaluation. Use it to prioritize which splits are most informative for exploratory player-level analysis on the 2018-19 cleaned dataset. The tool remains a **local-first analytics helper**; this evaluation is a small, defensible check of split usefulness, not a full validation.
+**win_loss** is the strongest split in this exploratory evaluation; **home_away** is weaker and usually small; **opponent** shows moderate signal for a limited subset. Use the table to prioritize which splits are most informative for exploratory player-level analysis on the 2018-19 cleaned dataset. The tool remains a local-first analytics helper; this evaluation is a small, defensible check of split usefulness, not a full validation.
