@@ -27,6 +27,17 @@ CourtSightR/
   .gitignore
   data/
     sample_nba_games.csv
+    games_2018_19_courtsightr.csv   # analysis-ready 2018-19 season (see data/DATA.md)
+    DATA.md                         # source, season choice, limitations
+  data-raw/
+    games_raw.csv                   # raw player-game CSV (not committed; place file here)
+  scripts/
+    build_clean_games_2018_19.R     # builds clean CSV from raw
+    evaluate_split_usefulness.R     # split-usefulness evaluation (2018-19)
+  reports/
+    split_usefulness_2018_19.Rmd    # evaluation report
+    tables/
+      split_usefulness_summary.csv  # comparison table (after running eval script)
   R/
     load_data.R
     clean_data.R
@@ -96,6 +107,16 @@ The CSV should contain one row per **player-game** with at least these columns:
 | plus_minus  | Plus/minus                     |
 
 The repository includes `data/sample_nba_games.csv` with this schema for testing.
+
+For a full-season analysis slice (e.g. split-usefulness evaluation), use the 2018-19 build: see **data/DATA.md** for the source dataset, why 2018-19 was chosen, and how to generate `data/games_2018_19_courtsightr.csv` from the raw file (`data-raw/games_raw.csv`).
+
+**Split-usefulness evaluation:** To run the lightweight evaluation of which split types produce meaningful variation on the 2018-19 cleaned data (player-level, win_loss / home_away / opponent):
+
+```bash
+Rscript scripts/evaluate_split_usefulness.R
+```
+
+This writes `reports/tables/split_usefulness_summary.csv` and `reports/tables/split_usefulness_summary.md`. Then render the short report: open `reports/split_usefulness_2018_19.Rmd` in RStudio and knit, or run `rmarkdown::render("reports/split_usefulness_2018_19.Rmd")` from the project root.
 
 ## Output examples
 

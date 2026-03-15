@@ -1,6 +1,10 @@
 # Outputs
 outputs/
 
+# Raw data (large; not committed)
+data-raw/games_raw.csv
+data/games.csv/
+
 # R
 .Rproj.user
 .Rhistory
