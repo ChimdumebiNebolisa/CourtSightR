@@ -68,7 +68,7 @@ plot_trend <- function(games_df, entity, y_var = "points", out_dir = "outputs") 
     ggplot2::geom_line(linewidth = 1) +
     ggplot2::geom_point(size = 2) +
     ggplot2::labs(
-      title = paste0(entity, " — ", y_label, " (last ", nrow(df), " games)"),
+      title = paste0(entity, " - ", y_label, " (last ", nrow(df), " games)"),
       x = "Game (most recent first)",
       y = y_label
     ) +

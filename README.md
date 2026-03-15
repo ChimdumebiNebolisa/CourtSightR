@@ -8,14 +8,14 @@ NBA box-score data is often messy and spread across many rows. CourtSightR provi
 
 ## Features
 
-- **CSV ingestion** — Load a local CSV via `--input`; validates file existence and required columns.
-- **Data cleaning** — Normalizes column names, dates, numeric types, and text fields (e.g. `home_away`, `win_loss`, team codes).
-- **Analysis modes** — `player` and `team` (team aggregates player-game rows to one row per team per game).
-- **Split analysis** — `overall`, `home_away`, `win_loss`, `opponent`, `last_n` (with optional `--last_n`).
-- **Metrics** — Games played, PPG, RPG, APG, FG%, 3P%, FT%, MPG, TOV/g, plus/minus average.
-- **Terminal output** — Formatted summary tables, no raw dumps.
-- **File outputs** — Summary CSV and at least one bar chart plus a trend plot when recent-game data exists.
-- **Error handling** — Clear messages for missing file, missing columns, missing entity, no matching data, and unsupported split.
+- **CSV ingestion**  -  Load a local CSV via `--input`; validates file existence and required columns.
+- **Data cleaning**  -  Normalizes column names, dates, numeric types, and text fields (e.g. `home_away`, `win_loss`, team codes).
+- **Analysis modes**  -  `player` and `team` (team aggregates player-game rows to one row per team per game).
+- **Split analysis**  -  `overall`, `home_away`, `win_loss`, `opponent`, `last_n` (with optional `--last_n`).
+- **Metrics**  -  Games played, PPG, RPG, APG, FG%, 3P%, FT%, MPG, TOV/g, plus/minus average.
+- **Terminal output**  -  Formatted summary tables, no raw dumps.
+- **File outputs**  -  Summary CSV and at least one bar chart plus a trend plot when recent-game data exists.
+- **Error handling**  -  Clear messages for missing file, missing columns, missing entity, no matching data, and unsupported split.
 
 ## Folder structure
 
@@ -120,9 +120,9 @@ Rscript scripts/evaluate_split_usefulness.R
 ## Output examples
 
 - **Terminal**: A formatted block with entity, mode, split, and per-split metrics (games, PPG, RPG, APG, FG%, 3P%, FT%, MPG, TOV/g, +/-).
-- **outputs/summary_&lt;mode&gt;_&lt;entity&gt;_&lt;split&gt;.csv** — Same metrics in CSV form.
-- **outputs/bar_&lt;entity&gt;_&lt;split&gt;.png** — Bar chart comparing a key metric (e.g. PPG) across split groups.
-- **outputs/trend_&lt;entity&gt;_last_n.png** — Trend of a stat (e.g. points) over the last N games when that view is available.
+- **outputs/summary_&lt;mode&gt;_&lt;entity&gt;_&lt;split&gt;.csv**  -  Same metrics in CSV form.
+- **outputs/bar_&lt;entity&gt;_&lt;split&gt;.png**  -  Bar chart comparing a key metric (e.g. PPG) across split groups.
+- **outputs/trend_&lt;entity&gt;_last_n.png**  -  Trend of a stat (e.g. points) over the last N games when that view is available.
 
 ## Future improvements
 
